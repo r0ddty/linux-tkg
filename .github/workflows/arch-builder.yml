@@ -12,7 +12,9 @@ env:
   _git_mirror: "gregkh"
   PKGDEST: "/tmp/linux-tkg"
   _debugdisable: "true"
-  _noccache: "true"
+  _noccache: "false"
+  _use_ccache: "true"               
+  _ccache_dir: "/home/user/.ccache" 
   _STRIP: "true"
   _compiler: "llvm"
   _lto_mode: "full"
@@ -54,6 +56,8 @@ jobs:
         run: |
           pacman -Syu --noconfirm base-devel sudo
           useradd user -G wheel && echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+          mkdir -p /home/user/.ccache
+          chown -R user:user /home/user/
           chown user -R ..
           chown user -R /tmp
 
@@ -66,8 +70,8 @@ jobs:
       - name: Restore ccache
         uses: actions/cache@v4
         with:
-          path: ~/.ccache
-          key: linux-tkg-${{ runner.os }}-${{ github.run_id }}
+          path: /home/user/.ccache
+          key: linux-tkg-${{ runner.os }}-${{ github.run_number }}
           restore-keys: |
             linux-tkg-${{ runner.os }}-
       
