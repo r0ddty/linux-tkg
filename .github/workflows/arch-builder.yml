@@ -62,6 +62,15 @@ jobs:
       #     touch "${_modprobeddb_db_path}"
       #     echo "${_modprobeddb_db_path}"
 
+
+      - name: Restore ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: linux-tkg-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            linux-tkg-${{ runner.os }}-
+      
       - name: Compile Kernel
         run: su --preserve-environment user -c "yes '' | makepkg --noconfirm -s"
         # run: |
